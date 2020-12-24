@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FourthLessonTasks.ArrayClassLibrary;
 
 namespace FourthLessonTasks
 {
@@ -13,10 +14,11 @@ namespace FourthLessonTasks
 
             //1) Дан  целочисленный  массив  из 20 элементов.  Элементы  массива  могут принимать  целые  значения  от –10 000 до 10 000 включительно. Заполнить случайными числами.  Написать программу, позволяющую найти и вывести количество пар элементов массива, в которых только одно число делится на 3. В данной задаче под парой подразумевается два подряд идущих элемента массива. Например, для массива из пяти элементов: 6; 2; 9; –3; 6 ответ — 2.
             FirstTask();
-
-            // 2)
+            // 2) а) Дописать класс для работы с одномерным массивом. Реализовать конструктор, создающий массив определенного размера и заполняющий 
+            //массив числами от начального значения с заданным шагом. Создать свойство Sum, которое возвращает сумму элементов массива, метод Inverse, 
+            //возвращающий новый массив с измененными знаками у всех элементов массива (старый массив, остается без изменений),  метод Multi, 
+            //умножающий каждый элемент массива на определённое число, свойство MaxCount, возвращающее количество максимальных элементов.
             SecondTask();
-
 
         }
 
@@ -56,10 +58,26 @@ namespace FourthLessonTasks
             double to = rand.Next(1, 100);
             int step = rand.Next(1, 10);
 
-            Console.WriteLine("От: "+from+"До: "+to+"Шаг: "+step);
+            Console.WriteLine("От: "+from+" До: "+to+" Шаг: "+step+"; ");
 
             ArrayClass nwArCls = new ArrayClass(from, to, step);
-            Console.WriteLine("Итог: " + nwArCls.ToString());
+            Console.WriteLine("Итог: \n" + nwArCls.ToString());
+            Console.WriteLine("Количество элементов: " + nwArCls.Sum);
+            int[] invertedArr = nwArCls.Inverse();
+            string invertedArrInString = "";
+            foreach(int i in invertedArr)
+            {
+                invertedArrInString += i + "; ";
+            }
+            Console.WriteLine("Инвертированный: \n" + invertedArrInString);
+            Console.WriteLine("Старый не поменялся: \n" + nwArCls.ToString());
+            int factor = rand.Next(1, 100);
+            nwArCls.Multi(factor);
+            Console.WriteLine("Множитель: " + factor);
+            Console.WriteLine("Итог: \n" + nwArCls.ToString());
+            Console.WriteLine("MaxCount: " + nwArCls.MaxCount);
+            Console.ReadKey();
+
         }
 
     }
