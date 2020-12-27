@@ -11,14 +11,15 @@ namespace SixthLessonTasks
 
     class Program
     {
+
         static void Main(string[] args)
         {
             //1) Изменить программу вывода таблицы функции так, чтобы можно было передавать функции типа double (double, double). 
             //Продемонстрировать работу на функции с функцией a*x^2 и функцией a*sin(x).
-            FirstTask();
+            //FirstTask();
             //4) **Считайте файл различными способами.Смотрите “Пример записи файла различными способами”. 
             //Создайте методы, которые возвращают массив byte (FileStream, BufferedStream), строку для StreamReader и массив int для BinaryReader.
-            //FourthTask();
+            FourthTask();
 
         }
 
@@ -89,20 +90,28 @@ namespace SixthLessonTasks
             return a * Math.Sin(x);
         }
 
-        //public static void FourthTask()
-        //{
-        //    string name = "example.txt";
-        //    string txt = "Привет немногопоточность!";
-        //    //StreamReader
-        //    CreateFile(name, txt);
-        //    Console.WriteLine("StreamReader: ");
-        //    Console.WriteLine(ReadFileStreamReader());
-        //    //BinaryReader
-        //    int[] BinaryReaderArr = ReadFileBinaryReader(name, txt + " BinaryReader!");
-        //    Console.WriteLine("BinaryReader: ");
-        //    //Console.WriteLine(Encoding.Default.GetString(BinaryReaderArr.)
-        //    Console.WriteLine(Encoding.Default.GetString(BinaryReaderArr.)
-        //}
+        public static void FourthTask()
+        {
+            string name = "example.txt";
+            string txt = "Привет немногопоточность!";
+            //StreamReader
+            CreateFile(name, txt);
+            Console.WriteLine("StreamReader: ");
+            Console.WriteLine(ReadFileStreamReader());
+            //BinaryReader
+            byte[] BinaryReaderArr = ReadFileBinaryReader(name);
+            string str = DecodeBytesToString(BinaryReaderArr);
+            Console.WriteLine("BinaryReader: \n" + str);
+            //FileStream
+            byte[] FileStream = ReadFileFileStream(name);
+            str = DecodeBytesToString(FileStream);
+            Console.WriteLine("FileStream: \n" + str);
+            //FileStream
+            byte[] BufferedStream = ReadFileBufferedStream(name);
+            str = DecodeBytesToString(BufferedStream);
+            Console.WriteLine("FileStream: \n" + str);
+            Console.ReadKey();
+        }
 
         public static void CreateFile(string name, string text)
         {
@@ -110,10 +119,21 @@ namespace SixthLessonTasks
             using (FileStream fstream = new FileStream(name, FileMode.Create))
             {
                 // преобразуем строку в байты
-                byte[] array = Encoding.Default.GetBytes(text);
+                byte[] array = Encoding.UTF8.GetBytes(text);
                 // запись массива байтов в файл
                 fstream.Write(array, 0, array.Length);
             }
+        }
+
+        public static string DecodeBytesToString(byte[] arr)
+        {
+            string str = "";
+            char[] readedTxt = Encoding.UTF8.GetChars(arr);
+            for (int i = 0; i < readedTxt.Length; i++)
+            {
+                str += readedTxt[i].ToString();
+            }
+            return str;
         }
 
         public static string ReadFileStreamReader()
@@ -126,40 +146,45 @@ namespace SixthLessonTasks
             return result;
         }
 
-        public static int[] ReadFileBinaryReader(string name, string txt)
+        public static byte[] ReadFileBinaryReader(string name)
         {
-            int[] result;
-            // запись в файл
-            using (FileStream fstream = new FileStream(name, FileMode.Create))
+            byte[] result;
+            using (BinaryReader reader = new BinaryReader(File.Open(name, FileMode.OpenOrCreate)))
             {
-                // преобразуем строку в байты
-                byte[] array = Encoding.Default.GetBytes(txt);
-                // запись массива байтов в файл
-                fstream.Write(array, 0, array.Length);
-                using (BinaryReader bnrReader = new BinaryReader(fstream))
+                result = new byte[reader.BaseStream.Length];
+                int i = 0;
+                while (reader.PeekChar() > 0)
                 {
-                    result = new int[bnrReader.BaseStream.Length];
-                    int i = 0;
-                    while (bnrReader.BaseStream.CanRead)
-                    {
-                        result[i] = bnrReader.ReadInt32();
-                        i++;
-                    }
+                    result[i] = reader.ReadByte();
+                    i++;
                 }
             }
 
             return result;
         }
 
-        public static byte[] ReadFileFileStream(string name, string text)
+        public static byte[] ReadFileFileStream(string name)
         {
             byte[] btArr;
-            using (FileStream flStream = new FileStream("example.txt", FileMode.OpenOrCreate))
+            using (FileStream flStream = new FileStream(name, FileMode.OpenOrCreate))
             {
                 btArr = new byte[flStream.Length];
                 flStream.Read(btArr, 0, btArr.Length);
             }
             return btArr;
+        }
+
+        public static byte[] ReadFileBufferedStream(string name)
+        {
+            byte[] result;
+            using (BufferedStream reader = new BufferedStream(File.Open(name, FileMode.OpenOrCreate)))
+            {
+                result = new byte[reader.Length];
+                int i = 0;
+                reader.Read(result, 0, result.Length);
+            }
+
+            return result;
         }
 
     }
