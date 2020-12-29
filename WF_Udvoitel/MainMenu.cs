@@ -12,6 +12,8 @@ namespace WF_Udvoitel
 {
     public partial class MainMenu : Form
     {
+        //Ионов Георгий
+        
         public MainMenu()
         {
             InitializeComponent();
